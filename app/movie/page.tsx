@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Download, Play, Share2, Star, ChevronLeft, AlertCircle, MonitorPlay, Smartphone } from "lucide-react";
+import { ArrowLeft, Download, Play, Share2, Star, ChevronLeft, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function MovieDetail() {
-  // UI State: 'select' | 'download' | 'watch'
-  const [mode, setMode] = useState<"select" | "download" | "watch">("select");
+  // Simple state definition to avoid syntax errors
+  const [mode, setMode] = useState("select");
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white font-sans pb-20 selection:bg-purple-500 selection:text-white">
@@ -32,7 +32,7 @@ export default function MovieDetail() {
           className="w-[200px] md:w-[300px] rounded-xl overflow-hidden shadow-[0_0_40px_rgba(120,50,255,0.3)] border border-white/10"
         >
            <img 
-             src="https://image.tmdb.org/t/p/w500/2w1458e0a7f1a1a1a.jpg" // Akhanda 2 Poster
+             src="https://image.tmdb.org/t/p/w500/2w1458e0a7f1a1a1a.jpg" 
              alt="Movie Poster" 
              className="w-full h-auto object-cover"
            />
@@ -116,7 +116,7 @@ export default function MovieDetail() {
             </div>
         )}
 
-        {/* --- VIEW 2: DOWNLOAD LIST (Pic 1 Style) --- */}
+        {/* --- VIEW 2: DOWNLOAD LIST --- */}
         {mode === "download" && (
             <motion.div 
                 initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
@@ -138,7 +138,7 @@ export default function MovieDetail() {
             </motion.div>
         )}
 
-        {/* --- VIEW 3: PLAYER SELECTION (Pic 2 Style) --- */}
+        {/* --- VIEW 3: PLAYER SELECTION --- */}
         {mode === "watch" && (
             <motion.div 
                 initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
@@ -160,7 +160,6 @@ export default function MovieDetail() {
                 {/* External Player (Blue Theme) */}
                 <div className="w-full bg-[#0a0f1a] border border-blue-900/50 rounded-2xl p-6 flex flex-col items-center gap-3 cursor-pointer hover:border-blue-500 transition">
                     <div className="flex gap-2">
-                         {/* Fake Icons for VLC/MX */}
                          <div className="w-10 h-10 bg-orange-500 rounded flex items-center justify-center text-white font-bold text-xs shadow-lg">VLC</div>
                          <div className="w-10 h-10 bg-blue-500 rounded flex items-center justify-center text-white font-bold text-xs shadow-lg">MX</div>
                     </div>
@@ -172,9 +171,39 @@ export default function MovieDetail() {
 
       </div>
 
-      {/* --- CAST & CREW (Screenshot Style) --- */}
+      {/* --- CAST & CREW --- */}
       <div className="mt-12 px-5">
          <h2 className="text-lg font-bold mb-4">Cast & Crew</h2>
          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
              {CAST_DATA.map((actor, i) => (
                  <div key={i} className="flex flex-col items-center text-center">
+                     <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden border border-white/10 mb-2">
+                        <img src={actor.img} alt={actor.name} className="w-full h-full object-cover" />
+                     </div>
+                     <p className="text-xs font-bold text-white">{actor.name}</p>
+                     <p className="text-[10px] text-gray-400">{actor.role}</p>
+                 </div>
+             ))}
+         </div>
+      </div>
+
+    </div>
+  );
+}
+
+// --- DUMMY DATA ---
+const DOWNLOAD_LINKS = [
+    { quality: "480p", size: "600MB" },
+    { quality: "720p", size: "1.5GB" },
+    { quality: "720p HEVC", size: "1GB" },
+    { quality: "1080p", size: "3.4GB" },
+    { quality: "1080p HEVC", size: "2.3GB" },
+    { quality: "1080p HQ", size: "8.8GB" },
+];
+
+const CAST_DATA = [
+    { name: "Nandamuri Balakrishna", role: "Akhanda / Rudra", img: "https://image.tmdb.org/t/p/w200/hP2stO99sF06i6Xq8D4hE3k.jpg" },
+    { name: "Pragya Jaiswal", role: "Saranya", img: "https://image.tmdb.org/t/p/w200/j62dY1k4e.jpg" },
+    { name: "Samyuktha", role: "Lead Role", img: "https://image.tmdb.org/t/p/w200/abc.jpg" }, // broken link placeholder
+    { name: "Aadhi Pinisetty", role: "Villain", img: "https://image.tmdb.org/t/p/w200/def.jpg" }, // broken link placeholder
+];
