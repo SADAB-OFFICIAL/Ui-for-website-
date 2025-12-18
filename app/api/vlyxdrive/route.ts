@@ -19,11 +19,9 @@ export async function GET(request: Request) {
     const $ = cheerio.load(html);
     let targetDiv: any = null;
 
-    // Logic: Quality text match karke sahi div dhundna
     $(".download-links-div h4").each((_, elem) => {
       const text = $(elem).text().trim();
       const searchTerms = decodeURIComponent(quality).split(" ").filter(s => s.length > 2);
-      
       const isMatch = searchTerms.every(term => text.includes(term));
       if (isMatch) targetDiv = $(elem).next(".downloads-btns-div");
     });
@@ -33,7 +31,6 @@ export async function GET(request: Request) {
       targetDiv.find("a").each((_: any, el: any) => {
         const href = $(el).attr("href");
         if (href) {
-            // Server types identify karna
             if (href.includes("hubcloud")) links.push({ name: "N-Cloud", url: href, type: "ncloud" });
             else if (href.includes("gdflix")) links.push({ name: "V-Cloud", url: href, type: "vcloud" });
             else if (href.includes("drive.google")) links.push({ name: "G-Drive", url: href, type: "gdrive" });
