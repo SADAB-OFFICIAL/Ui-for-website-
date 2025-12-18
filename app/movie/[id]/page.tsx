@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Play, Download, ChevronLeft, HardDrive, ShieldCheck, Film, Server, ChevronRight, Loader2, Link as LinkIcon, Eye } from 'lucide-react';
+// 👇 Is line mein 'MonitorPlay' add kiya hai
+import { Play, Download, ChevronLeft, HardDrive, ShieldCheck, Film, Server, ChevronRight, Loader2, Link as LinkIcon, Eye, MonitorPlay } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -256,6 +257,7 @@ export default function MovieDetail() {
                     {viewState === 'watch' && (
                          <motion.div key="watch" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 text-center pt-10">
                             <div className="bg-zinc-900/50 p-8 rounded-3xl border border-zinc-800 max-w-sm mx-auto">
+                                {/* FIXED ICON IMPORT */}
                                 <MonitorPlay size={48} className="mx-auto text-green-500 mb-4"/>
                                 <h3 className="text-xl font-bold text-white mb-2">Streaming Soon</h3>
                                 <p className="text-zinc-400 text-sm">We are adding a high-speed player. For now, please use the download option.</p>
@@ -267,4 +269,4 @@ export default function MovieDetail() {
             </main>
         </div>
     );
-                                }
+}
