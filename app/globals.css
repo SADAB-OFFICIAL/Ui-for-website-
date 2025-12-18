@@ -2,53 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-/* --- 1. Base Styles (Dark Theme) --- */
 @layer base {
   body {
-    background-color: #141414; /* Netflix Dark Background */
-    color: #ffffff;
-    font-family: Arial, Helvetica, sans-serif; /* Fallback fonts */
-    -webkit-font-smoothing: antialiased; /* Text ko crisp banata hai */
-    -moz-osx-font-smoothing: grayscale;
+    @apply bg-[#0a0a0a] text-white;
+    font-family: Arial, Helvetica, sans-serif;
   }
 }
 
-/* --- 2. Custom Selection Color (Red Highlight) --- */
+/* --- Hide Scrollbar for Chrome/Safari/Opera --- */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- Hide Scrollbar for IE, Edge and Firefox --- */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* --- Custom Text Selection (Netflix Red) --- */
 ::selection {
-  background-color: #e50914; /* Netflix Red */
+  background-color: #e50914;
   color: white;
-}
-
-/* --- 3. Utilities (Hide Scrollbar Logic) --- */
-@layer utilities {
-  /* Chrome, Safari and Opera ke liye */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* IE, Edge and Firefox ke liye */
-  .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-}
-
-/* --- 4. Global Custom Scrollbar (Desktop ke liye better look) --- */
-/* Ye pure page ke scrollbar ko dark banata hai taaki white patti na dikhe */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #141414; 
-}
-
-::-webkit-scrollbar-thumb {
-  background: #333; 
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555; 
 }
