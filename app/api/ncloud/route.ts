@@ -20,7 +20,6 @@ export async function GET(request: Request) {
   }
 
   try {
-    // HOP 1: HubCloud
     const html1 = await fetchProxy(hubUrl);
     if (!html1) throw new Error("HubCloud Failed");
     const $1 = cheerio.load(html1);
@@ -33,32 +32,26 @@ export async function GET(request: Request) {
             }
         });
     }
-
     if (!gamerLink) throw new Error("Gamer Link Not Found");
 
-    // HOP 2: GamerXYT (Final Destination)
     const html2 = await fetchProxy(gamerLink);
     if (!html2) throw new Error("GamerXYT Failed");
     const $2 = cheerio.load(html2);
 
     const finalLinks: any[] = [];
     $2("a.btn").each((_, el) => {
-        const text = $2(el).text().trim().toLowerCase();
         const href = $2(el).attr("href");
-
         if (href && !href.startsWith("#") && !href.startsWith("javascript")) {
             let type = "unknown";
             let name = $2(el).text().trim();
+            const text = name.toLowerCase();
 
             if (text.includes("fslv2")) type = "FSLv2";
             else if (text.includes("fsl")) type = "FSL";
             else if (text.includes("pixel") || href.includes("pixeldrain")) type = "Pixel";
             else if (text.includes("zipdisk")) type = "ZipDisk";
-            else if (text.includes("10gbps")) type = "Fast-Server";
 
-            if(type !== "unknown") {
-                finalLinks.push({ name, url: href, type });
-            }
+            if(type !== "unknown") finalLinks.push({ name, url: href, type });
         }
     });
 
