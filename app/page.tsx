@@ -5,11 +5,11 @@ import { Play, Info, Search, Bell } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-// --- Types ---
+// --- Types (Ye aapke API data se match karega) ---
 interface Movie {
   title: string;
   poster: string;
-  slug: string; // Base64 encoded slug from API
+  slug: string;
 }
 
 export default function HomePage() {
@@ -17,17 +17,17 @@ export default function HomePage() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // --- Fetch Real Data ---
+  // --- Fetch Logic (Jo ab sahi chal raha hai) ---
   useEffect(() => {
     const fetchMovies = async () => {
       try {
+        // Aapka working API endpoint call ho raha hai
         const res = await fetch('/api/home');
+        if (!res.ok) throw new Error("API Failed");
         const data = await res.json();
-        if (Array.isArray(data)) {
-          setMovies(data);
-        }
+        setMovies(data);
       } catch (error) {
-        console.error("Failed to fetch home:", error);
+        console.error("Home Fetch Error:", error);
       } finally {
         setLoading(false);
       }
@@ -35,99 +35,121 @@ export default function HomePage() {
 
     fetchMovies();
 
+    // Navbar Scroll Effect
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden font-sans selection:bg-red-600 selection:text-white">
-      
-      {/* --- Navbar --- */}
+    <div className="min-h-screen bg-[#141414] text-white font-sans overflow-x-hidden selection:bg-red-600 selection:text-white">
+
+      {/* --- 1. NAVBAR (Sticky & Glassmorphism) --- */}
       <nav className={`fixed top-0 w-full z-50 transition-all duration-500 px-4 md:px-12 py-4 flex items-center justify-between ${
-          scrolled ? 'bg-[#0a0a0a]/95 backdrop-blur-md shadow-lg' : 'bg-gradient-to-b from-black/80 to-transparent'
+          scrolled ? 'bg-[#141414]/95 backdrop-blur-md shadow-lg' : 'bg-gradient-to-b from-black/80 to-transparent'
         }`}>
         <div className="flex items-center gap-8">
-          <Link href="/" className="text-red-600 text-3xl font-bold tracking-tighter hover:scale-105 transition-transform">
-            NetVlyx
+          <Link href="/" className="text-red-600 text-2xl md:text-4xl font-bold tracking-tighter cursor-pointer hover:scale-105 transition-transform">
+            NETVLYX
           </Link>
+          {/* Desktop Menu */}
           <div className="hidden md:flex gap-6 text-sm text-gray-300 font-medium">
-            {['Home', 'TV Shows', 'Movies', 'New & Popular'].map((item) => (
-              <Link key={item} href="#" className="hover:text-white transition-colors">{item}</Link>
-            ))}
+            <Link href="#" className="hover:text-white transition">Home</Link>
+            <Link href="#" className="hover:text-white transition">TV Shows</Link>
+            <Link href="#" className="hover:text-white transition">Movies</Link>
+            <Link href="#" className="hover:text-white transition">New & Popular</Link>
           </div>
         </div>
+
+        {/* Icons */}
         <div className="flex items-center gap-6 text-gray-200">
-          <Search className="w-6 h-6 cursor-pointer hover:text-white" />
-          <Bell className="w-6 h-6 cursor-pointer hover:text-white" />
-          <div className="w-8 h-8 rounded bg-red-600"></div>
+          <Search className="w-5 h-5 cursor-pointer hover:text-white transition" />
+          <Bell className="w-5 h-5 cursor-pointer hover:text-white transition" />
+          <div className="w-8 h-8 rounded bg-red-600 cursor-pointer border border-white/20"></div>
         </div>
       </nav>
 
-      {/* --- Hero Section --- */}
-      <header className="relative w-full h-[85vh] md:h-[95vh] overflow-hidden group">
+      {/* --- 2. HERO SECTION (Video Background) --- */}
+      <div className="relative w-full h-[80vh] md:h-screen">
+        {/* Background Video */}
         <div className="absolute inset-0 w-full h-full pointer-events-none">
-            <video 
-                poster="https://image.tmdb.org/t/p/original/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg"
-                autoPlay muted loop 
+            <video
                 className="w-full h-full object-cover opacity-60 scale-105"
+                autoPlay
+                muted
+                loop
+                poster="https://image.tmdb.org/t/p/original/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg"
             >
                 <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
             </video>
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/90 via-[#0a0a0a]/30 to-transparent" />
+            {/* Cinematic Gradients */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent" />
         </div>
 
-        <div className="absolute bottom-0 left-0 w-full p-6 md:p-12 md:pb-24 flex flex-col justify-end h-full z-10 max-w-2xl">
-          <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tight drop-shadow-2xl">NETVLYX</h1>
-          <p className="text-lg text-gray-200 mb-8 line-clamp-3 drop-shadow-md font-medium">
-            Premium streaming experience with the power of hybrid scraping technology.
+        {/* Hero Content */}
+        <div className="absolute bottom-[20%] left-4 md:left-12 max-w-xl space-y-4 md:space-y-6 z-10">
+          <h1 className="text-5xl md:text-7xl font-black drop-shadow-2xl leading-tight tracking-tight">
+            INTERSTELLAR
+          </h1>
+          <p className="text-sm md:text-lg text-gray-200 drop-shadow-md line-clamp-3 font-medium">
+             When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot, Joseph Cooper, is tasked to pilot a spacecraft, along with a team of researchers, to find a new planet for humans.
           </p>
-          <div className="flex gap-4">
-             <button className="flex items-center gap-2 bg-white text-black px-8 py-3 rounded-[4px] font-bold hover:bg-white/90 transition text-lg">
-                <Play fill="black" size={24} /> Play
-             </button>
-             <button className="flex items-center gap-2 bg-gray-500/40 backdrop-blur-sm text-white px-8 py-3 rounded-[4px] font-bold hover:bg-gray-500/60 transition text-lg">
-                <Info size={24} /> More Info
-             </button>
+          <div className="flex items-center gap-4">
+            <button className="flex items-center gap-2 bg-white text-black px-6 md:px-8 py-2 md:py-3 rounded-[4px] font-bold hover:bg-white/90 transition text-lg">
+                <Play fill="black" size={22} /> Play
+            </button>
+            <button className="flex items-center gap-2 bg-gray-500/40 backdrop-blur-md text-white px-6 md:px-8 py-2 md:py-3 rounded-[4px] font-bold hover:bg-gray-500/60 transition text-lg">
+                <Info size={22} /> More Info
+            </button>
           </div>
         </div>
-      </header>
+      </div>
 
-      {/* --- Dynamic Content --- */}
-      <main className="relative z-20 -mt-12 md:-mt-32 space-y-12 pb-20 pl-4 md:pl-12 overflow-hidden">
-        
+      {/* --- 3. MOVIES SLIDER (Scraped Data) --- */}
+      <div className="relative z-20 -mt-24 md:-mt-32 pl-4 md:pl-12 pb-20 space-y-8">
         <section>
-          <h2 className="text-xl md:text-2xl font-semibold mb-4 text-white/90">Latest Releases</h2>
-          
+          <h2 className="text-xl md:text-2xl font-semibold mb-4 text-gray-100 drop-shadow-md">Latest Releases</h2>
+
+          {/* Loading State (Skeleton) */}
           {loading ? (
              <div className="flex gap-4 overflow-hidden">
-                {[1,2,3,4,5].map(i => (
-                    <div key={i} className="w-[160px] h-[240px] bg-zinc-800 animate-pulse rounded-md flex-none"></div>
+                {[1,2,3,4,5,6].map((n) => (
+                    <div key={n} className="min-w-[150px] md:min-w-[220px] h-[220px] md:h-[330px] bg-zinc-800 animate-pulse rounded-md" />
                 ))}
              </div>
           ) : (
-            <div className="flex gap-4 overflow-x-scroll no-scrollbar pb-8 pr-8 scroll-smooth">
+             /* Real Data Row */
+             <div className="flex gap-4 overflow-x-scroll no-scrollbar pb-8 pr-8 scroll-smooth items-center">
                 {movies.map((movie, idx) => (
-                <Link key={idx} href={`/movie/${movie.slug}`} className="flex-none group relative">
-                    <motion.div 
-                        whileHover={{ scale: 1.05, zIndex: 10 }}
-                        className="w-[160px] md:w-[220px] aspect-[2/3] rounded-md overflow-hidden bg-zinc-800 cursor-pointer shadow-lg transition-shadow"
-                    >
-                    <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center flex-col p-2 text-center">
-                        <p className="font-bold text-sm line-clamp-2">{movie.title}</p>
-                        <div className="mt-2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition">
-                            <Play fill="black" size={16} className="text-black ml-1" />
-                        </div>
-                    </div>
-                    </motion.div>
-                </Link>
+                    <Link key={idx} href={`/movie/${movie.slug}`}>
+                        <motion.div
+                            whileHover={{ scale: 1.05, y: -5, zIndex: 10 }}
+                            transition={{ duration: 0.2 }}
+                            className="relative min-w-[150px] md:min-w-[220px] h-[220px] md:h-[330px] rounded-md overflow-hidden bg-zinc-900 cursor-pointer shadow-lg group border border-white/5 hover:border-white/20"
+                        >
+                            <img
+                                src={movie.poster}
+                                alt={movie.title}
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                            />
+                            {/* Hover Details Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                                <p className="text-sm font-bold text-center text-white">{movie.title}</p>
+                                <div className="flex justify-center mt-2">
+                                  <div className="bg-white rounded-full p-2">
+                                    <Play fill="black" size={12} className="text-black"/>
+                                  </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </Link>
                 ))}
-            </div>
+             </div>
           )}
         </section>
-      </main>
+      </div>
     </div>
   );
 }
