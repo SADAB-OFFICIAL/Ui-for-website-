@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link"; // Navigation ke liye Link import kiya
-import { Play, Info, Search, MessageCircle, Menu, Volume2, VolumeX, Bell } from "lucide-react"; 
+import Link from "next/link"; 
+import { Play, Info, Search, Menu, Volume2, VolumeX, Bell } from "lucide-react"; 
 import { motion } from "framer-motion";
 
-// --- DATA ---
+// --- DATA WITH IDs (Important for Scraper) ---
 const HERO_MOVIE = {
+  id: "dune-part-two", // Unique ID
   title: "Dune: Part Two",
   desc: "Paul Atreides unites with Chani and the Fremen while on a warpath of revenge against the conspirators who destroyed his family.",
   videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
@@ -14,18 +15,18 @@ const HERO_MOVIE = {
 };
 
 const LATEST_UPLOADS = [
-  { name: "Fallout", img: "https://image.tmdb.org/t/p/w500/8cZPLomcCnDdpInOHXCcVfiNSES.jpg" },
-  { name: "Godzilla x Kong", img: "https://image.tmdb.org/t/p/w500/tM26baW12s6N1iXXXFzB5E8I2k9.jpg" },
-  { name: "Civil War", img: "https://image.tmdb.org/t/p/w500/sh7Rg8Er3tFcN9BpKIPOMvALgZd.jpg" },
-  { name: "Oppenheimer", img: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg" },
-  { name: "Deadpool 3", img: "https://image.tmdb.org/t/p/w500/yYrvN5WFeGYjJnRzhY0QXuo4Isw.jpg" },
+  { id: "fallout-series", name: "Fallout", img: "https://image.tmdb.org/t/p/w500/8cZPLomcCnDdpInOHXCcVfiNSES.jpg" },
+  { id: "godzilla-kong", name: "Godzilla x Kong", img: "https://image.tmdb.org/t/p/w500/tM26baW12s6N1iXXXFzB5E8I2k9.jpg" },
+  { id: "civil-war", name: "Civil War", img: "https://image.tmdb.org/t/p/w500/sh7Rg8Er3tFcN9BpKIPOMvALgZd.jpg" },
+  { id: "oppenheimer", name: "Oppenheimer", img: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg" },
+  { id: "deadpool-3", name: "Deadpool 3", img: "https://image.tmdb.org/t/p/w500/yYrvN5WFeGYjJnRzhY0QXuo4Isw.jpg" },
 ];
 
 const POPULAR_IND = [
-  { name: "Kalki 2898 AD", img: "https://image.tmdb.org/t/p/w500/bieeC0483MhH0r3j9i9yY3t0dYh.jpg" },
-  { name: "Pushpa 2", img: "https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHkjJDve25.jpg" },
-  { name: "Salaar", img: "https://image.tmdb.org/t/p/w500/m1b9ZB7A5wL4k09U8J9Q6j1.jpg" },
-  { name: "Animal", img: "https://image.tmdb.org/t/p/w500/hr9rjR3J0xBBK9JThhKdxrMvU.jpg" },
+  { id: "kalki-2898", name: "Kalki 2898 AD", img: "https://image.tmdb.org/t/p/w500/bieeC0483MhH0r3j9i9yY3t0dYh.jpg" },
+  { id: "pushpa-2", name: "Pushpa 2", img: "https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHkjJDve25.jpg" },
+  { id: "salaar", name: "Salaar", img: "https://image.tmdb.org/t/p/w500/m1b9ZB7A5wL4k09U8J9Q6j1.jpg" },
+  { id: "animal", name: "Animal", img: "https://image.tmdb.org/t/p/w500/hr9rjR3J0xBBK9JThhKdxrMvU.jpg" },
 ];
 
 export default function Home() {
@@ -113,7 +114,8 @@ export default function Home() {
           </p>
 
           <div className="flex gap-4 pt-2">
-            <Link href="/movie">
+            {/* HERO LINK: Points to dynamic ID */}
+            <Link href={`/movie/${HERO_MOVIE.id}`}>
                 <button className="bg-white text-black px-6 md:px-8 py-2 md:py-3 rounded hover:bg-opacity-80 transition font-bold flex items-center gap-2 text-lg">
                 <Play fill="black" size={24} /> Play
                 </button>
@@ -135,8 +137,8 @@ export default function Home() {
         {/* Latest Movies */}
         <Section title="Latest Releases">
           {LATEST_UPLOADS.map((movie, i) => (
-            // Link added here
-            <Link href="/movie" key={i}>
+            // DYNAMIC LINK: /movie/fallout-series
+            <Link href={`/movie/${movie.id}`} key={i}>
                 <motion.div 
                 whileHover={{ scale: 1.05, zIndex: 10 }}
                 className="min-w-[140px] md:min-w-[220px] bg-[#1f1f1f] rounded-md overflow-hidden cursor-pointer relative group shadow-lg"
@@ -161,8 +163,8 @@ export default function Home() {
         {/* Top 10 (Big Numbers) */}
         <Section title="Top 10 Movies in India">
           {POPULAR_IND.map((movie, index) => (
-            // Link added here
-            <Link href="/movie" key={index}>
+            // DYNAMIC LINK: /movie/pushpa-2
+            <Link href={`/movie/${movie.id}`} key={index}>
                 <motion.div whileHover={{ scale: 1.1 }} className="relative min-w-[160px] md:min-w-[200px] flex items-end h-[180px] cursor-pointer">
                 <span className="absolute -left-6 bottom-0 text-[100px] font-black leading-none text-[#141414] drop-shadow-lg" style={{ WebkitTextStroke: "4px #555" }}>
                     {index + 1}
@@ -190,4 +192,4 @@ function Section({ title, children }: { title: string, children: React.ReactNode
       </div>
     </div>
   );
-}
+        }
