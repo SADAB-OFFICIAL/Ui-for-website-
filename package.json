@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "cheerio": "1.0.0-rc.10",  <-- YEH VERSION CHANGE KARO (rc.12 se rc.10)
+    "cheerio": "1.0.0-rc.10",
     "clsx": "^2.1.0",
     "framer-motion": "^11.0.8",
     "lucide-react": "^0.344.0",
