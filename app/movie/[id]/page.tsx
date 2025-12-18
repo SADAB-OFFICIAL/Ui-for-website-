@@ -1,11 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Play, Download, ChevronLeft, HardDrive, ShieldCheck, Film, Server, ChevronRight, AlertCircle, Loader2, Link as LinkIcon } from 'lucide-react';
+import { Play, Download, ChevronLeft, HardDrive, ShieldCheck, Film, Server, ChevronRight, Loader2, Link as LinkIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useRouter } from 'next/navigation';
 
-// --- Types ---
 type ViewState = 'select' | 'download' | 'vlyxdrive' | 'final_links';
 
 interface EpisodeLink {
@@ -40,10 +39,10 @@ export default function MovieDetail() {
     
     // Logic States
     const [selectedQuality, setSelectedQuality] = useState<EpisodeLink | null>(null);
-    const [providers, setProviders] = useState<ProviderLink[]>([]); // N-Cloud, G-Drive list
+    const [providers, setProviders] = useState<ProviderLink[]>([]);
     const [loadingProviders, setLoadingProviders] = useState(false);
     
-    const [finalLinks, setFinalLinks] = useState<FinalLink[]>([]); // Pixel, FSL list
+    const [finalLinks, setFinalLinks] = useState<FinalLink[]>([]);
     const [loadingFinal, setLoadingFinal] = useState(false);
     const [selectedProviderName, setSelectedProviderName] = useState("");
 
@@ -60,7 +59,7 @@ export default function MovieDetail() {
             .finally(() => setLoading(false));
     }, [slug]);
 
-    // --- 2. Load VlyxDrive Providers (Click on Quality) ---
+    // --- 2. Load VlyxDrive Providers ---
     const handleQualitySelect = (link: EpisodeLink) => {
         setSelectedQuality(link);
         setViewState('vlyxdrive');
@@ -75,22 +74,18 @@ export default function MovieDetail() {
             .finally(() => setLoadingProviders(false));
     };
 
-    // --- 3. Load Final N-Cloud Links (Click on N-Cloud) ---
+    // --- 3. Load Final Links ---
     const handleProviderSelect = (provider: ProviderLink) => {
-        // Agar G-Drive ya V-Cloud hai toh direct khol do (abhi ke liye)
         if (provider.type === 'gdrive' || provider.type === 'vcloud') {
             window.open(provider.url, '_blank');
             return;
         }
-
-        // Agar N-Cloud hai, toh API call karo
         if (provider.type === 'ncloud') {
             setSelectedProviderName(provider.name);
             setViewState('final_links');
             setLoadingFinal(true);
             setFinalLinks([]);
 
-            // URL pass kar rahe hain API ko
             fetch(`/api/ncloud?url=${encodeURIComponent(provider.url)}`)
                 .then(res => res.json())
                 .then(resp => {
@@ -112,15 +107,11 @@ export default function MovieDetail() {
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white font-sans overflow-y-auto pb-20">
-            
-            {/* Back Button */}
             <div className="fixed top-6 left-6 z-50">
                 <button onClick={handleBack} className="bg-black/40 backdrop-blur-md p-3 rounded-full hover:bg-white/20 transition border border-white/10">
                     <ChevronLeft size={24} />
                 </button>
             </div>
-
-            {/* --- HERO SECTION --- */}
             <div className="relative w-full h-[50vh] md:h-[60vh]">
                 <div className="absolute inset-0">
                     <img src={movie.poster} alt="Backdrop" className="w-full h-full object-cover opacity-30 blur-sm" />
@@ -135,11 +126,8 @@ export default function MovieDetail() {
                 </div>
             </div>
 
-            {/* --- INTERACTIVE CARD --- */}
             <main className="px-6 md:px-12 py-8 max-w-4xl mx-auto">
                 <AnimatePresence mode="wait">
-                    
-                    {/* 1. SELECT MODE */}
                     {viewState === 'select' && (
                         <motion.div key="select" initial={{opacity:0, y:10}} animate={{opacity:1, y:0}} exit={{opacity:0, y:-10}} className="space-y-4">
                             <h2 className="text-xl font-semibold border-b border-zinc-800 pb-2">Select Option</h2>
@@ -153,7 +141,6 @@ export default function MovieDetail() {
                         </motion.div>
                     )}
 
-                    {/* 2. QUALITY LIST (From scraped data) */}
                     {viewState === 'download' && (
                         <motion.div key="download" initial={{opacity:0, y:10}} animate={{opacity:1, y:0}} exit={{opacity:0, y:-10}} className="space-y-3">
                             <h2 className="text-xl font-semibold mb-4">Select Quality</h2>
@@ -169,7 +156,6 @@ export default function MovieDetail() {
                         </motion.div>
                     )}
 
-                    {/* 3. VLYXDRIVE (Providers: N-Cloud, G-Drive) */}
                     {viewState === 'vlyxdrive' && (
                         <motion.div key="vlyxdrive" initial={{opacity:0, scale:0.95}} animate={{opacity:1, scale:1}} className="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-6 text-center">
                             <div className="flex justify-center mb-4"><ShieldCheck className="text-green-400" size={32}/></div>
@@ -196,7 +182,6 @@ export default function MovieDetail() {
                         </motion.div>
                     )}
 
-                    {/* 4. FINAL LINKS (Result of N-Cloud) */}
                     {viewState === 'final_links' && (
                         <motion.div key="final" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} className="bg-black border border-zinc-800 rounded-2xl p-6">
                             <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Server className="text-blue-500"/> {selectedProviderName} Results</h2>
@@ -222,10 +207,8 @@ export default function MovieDetail() {
                             )}
                         </motion.div>
                     )}
-
                 </AnimatePresence>
             </main>
         </div>
     );
-              }
-                        
+            }
