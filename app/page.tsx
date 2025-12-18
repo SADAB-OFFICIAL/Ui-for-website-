@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Play, Info, Search, MessageCircle, Menu, Volume2, VolumeX } from "lucide-react";
-import { motion } from "framer-motion"; // Animation Library
+// FIX: Maine yahan 'Bell' add kar diya hai
+import { Play, Info, Search, MessageCircle, Menu, Volume2, VolumeX, Bell } from "lucide-react"; 
+import { motion } from "framer-motion";
 
 // --- DATA ---
 const HERO_MOVIE = {
   title: "Dune: Part Two",
   desc: "Paul Atreides unites with Chani and the Fremen while on a warpath of revenge against the conspirators who destroyed his family.",
-  videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", // High Quality Sample Video
+  videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
   poster: "https://image.tmdb.org/t/p/original/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
 };
 
@@ -21,9 +22,9 @@ const LATEST_UPLOADS = [
 ];
 
 const POPULAR_IND = [
-  { name: "Kalki 2898 AD", img: "https://image.tmdb.org/t/p/w500/bieeC0483MhH0r3j9i9yY3t0dYh.jpg" }, // Dummy link logic
+  { name: "Kalki 2898 AD", img: "https://image.tmdb.org/t/p/w500/bieeC0483MhH0r3j9i9yY3t0dYh.jpg" },
   { name: "Pushpa 2", img: "https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHkjJDve25.jpg" },
-  { name: "Salaar", img: "https://image.tmdb.org/t/p/w500/m1b9ZB7A5wL4k09U8J9Q6j1.jpg" }, // Use real links if needed
+  { name: "Salaar", img: "https://image.tmdb.org/t/p/w500/m1b9ZB7A5wL4k09U8J9Q6j1.jpg" },
   { name: "Animal", img: "https://image.tmdb.org/t/p/w500/hr9rjR3J0xBBK9JThhKdxrMvU.jpg" },
 ];
 
@@ -56,11 +57,16 @@ export default function Home() {
         </div>
 
         <div className="flex gap-4">
-          {[Search, BellIcon, Menu].map((Icon, i) => (
-             <button key={i} className="hover:text-gray-300 transition transform hover:scale-110">
-               <Icon size={22} className="text-white" />
-             </button>
-          ))}
+          {/* Icons fixed */}
+          <button className="hover:text-gray-300 transition transform hover:scale-110">
+             <Search size={22} className="text-white" />
+          </button>
+          <button className="hover:text-gray-300 transition transform hover:scale-110">
+             <Bell size={22} className="text-white" />
+          </button>
+          <button className="hover:text-gray-300 transition transform hover:scale-110">
+             <Menu size={22} className="text-white" />
+          </button>
         </div>
       </nav>
 
@@ -178,9 +184,4 @@ function Section({ title, children }: { title: string, children: React.ReactNode
       </div>
     </div>
   );
-}
-
-// Dummy Icon Component
-const BellIcon = ({ size, className }: { size: number, className: string }) => (
-    <Bell size={size} className={className} />
-);
+                                                                                                                         }
