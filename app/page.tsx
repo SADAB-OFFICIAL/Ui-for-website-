@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Play, Info, Search, Bell, Menu } from 'lucide-react';
+import { Play, Info, Search, Bell } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -64,7 +64,7 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* --- Hero Section (Static Fallback for Demo) --- */}
+      {/* --- Hero Section --- */}
       <header className="relative w-full h-[85vh] md:h-[95vh] overflow-hidden group">
         <div className="absolute inset-0 w-full h-full pointer-events-none">
             <video 
@@ -79,9 +79,9 @@ export default function HomePage() {
         </div>
 
         <div className="absolute bottom-0 left-0 w-full p-6 md:p-12 md:pb-24 flex flex-col justify-end h-full z-10 max-w-2xl">
-          <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tight drop-shadow-2xl">INTERSTELLAR</h1>
+          <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tight drop-shadow-2xl">NETVLYX</h1>
           <p className="text-lg text-gray-200 mb-8 line-clamp-3 drop-shadow-md font-medium">
-            Exploring the unknown reaches of the backend integration.
+            Premium streaming experience with the power of hybrid scraping technology.
           </p>
           <div className="flex gap-4">
              <button className="flex items-center gap-2 bg-white text-black px-8 py-3 rounded-[4px] font-bold hover:bg-white/90 transition text-lg">
@@ -97,7 +97,6 @@ export default function HomePage() {
       {/* --- Dynamic Content --- */}
       <main className="relative z-20 -mt-12 md:-mt-32 space-y-12 pb-20 pl-4 md:pl-12 overflow-hidden">
         
-        {/* Latest Scraped Movies */}
         <section>
           <h2 className="text-xl md:text-2xl font-semibold mb-4 text-white/90">Latest Releases</h2>
           
