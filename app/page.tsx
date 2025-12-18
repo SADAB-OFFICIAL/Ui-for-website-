@@ -1,195 +1,179 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link"; 
-import { Play, Info, Search, Menu, Volume2, VolumeX, Bell } from "lucide-react"; 
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from 'react';
+import { Play, Info, Search, Bell, Menu } from 'lucide-react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
 
-// --- DATA WITH IDs (Important for Scraper) ---
+// --- Types ---
+interface Movie {
+  id: string;
+  title: string;
+  image: string;
+  match: string;
+}
+
+// --- Mock Data ---
 const HERO_MOVIE = {
-  id: "dune-part-two", // Unique ID
-  title: "Dune: Part Two",
-  desc: "Paul Atreides unites with Chani and the Fremen while on a warpath of revenge against the conspirators who destroyed his family.",
-  videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
-  poster: "https://image.tmdb.org/t/p/original/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
+  title: "INTERSTELLAR",
+  description: "When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot, Joseph Cooper, is tasked to pilot a spacecraft, along with a team of researchers, to find a new planet for humans.",
+  videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", // Demo video
 };
 
-const LATEST_UPLOADS = [
-  { id: "fallout-series", name: "Fallout", img: "https://image.tmdb.org/t/p/w500/8cZPLomcCnDdpInOHXCcVfiNSES.jpg" },
-  { id: "godzilla-kong", name: "Godzilla x Kong", img: "https://image.tmdb.org/t/p/w500/tM26baW12s6N1iXXXFzB5E8I2k9.jpg" },
-  { id: "civil-war", name: "Civil War", img: "https://image.tmdb.org/t/p/w500/sh7Rg8Er3tFcN9BpKIPOMvALgZd.jpg" },
-  { id: "oppenheimer", name: "Oppenheimer", img: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg" },
-  { id: "deadpool-3", name: "Deadpool 3", img: "https://image.tmdb.org/t/p/w500/yYrvN5WFeGYjJnRzhY0QXuo4Isw.jpg" },
+const LATEST_RELEASES: Movie[] = [
+  { id: 'avatar-2', title: 'Avatar: The Way of Water', image: 'https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg', match: '98% Match' },
+  { id: 'oppenheimer', title: 'Oppenheimer', image: 'https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg', match: '95% Match' },
+  { id: 'dune-2', title: 'Dune: Part Two', image: 'https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg', match: '99% Match' },
+  { id: 'barbie', title: 'Barbie', image: 'https://image.tmdb.org/t/p/w500/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg', match: '92% Match' },
+  { id: 'batman', title: 'The Batman', image: 'https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg', match: '96% Match' },
 ];
 
-const POPULAR_IND = [
-  { id: "kalki-2898", name: "Kalki 2898 AD", img: "https://image.tmdb.org/t/p/w500/bieeC0483MhH0r3j9i9yY3t0dYh.jpg" },
-  { id: "pushpa-2", name: "Pushpa 2", img: "https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHkjJDve25.jpg" },
-  { id: "salaar", name: "Salaar", img: "https://image.tmdb.org/t/p/w500/m1b9ZB7A5wL4k09U8J9Q6j1.jpg" },
-  { id: "animal", name: "Animal", img: "https://image.tmdb.org/t/p/w500/hr9rjR3J0xBBK9JThhKdxrMvU.jpg" },
+const TOP_10: Movie[] = [
+  { id: 'stranger-things', title: 'Stranger Things', image: 'https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg', match: '#1 in TV' },
+  { id: 'wednesday', title: 'Wednesday', image: 'https://image.tmdb.org/t/p/w500/9PFonBhy4cQy7Jz20NpMygczOkv.jpg', match: '#2 in TV' },
+  { id: 'squid-game', title: 'Squid Game', image: 'https://image.tmdb.org/t/p/w500/dDlEmu3EZ0pggqyy433wuGUdBIt.jpg', match: '#3 in TV' },
+  { id: 'money-heist', title: 'Money Heist', image: 'https://image.tmdb.org/t/p/w500/reEMJA1uzscCbkpeRJeTT2bjqUp.jpg', match: '#4 in TV' },
 ];
 
-export default function Home() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+export default function HomePage() {
+  const [scrolled, setScrolled] = useState(false);
 
-  // Navbar Scroll Effect Listener
+  // Navbar background transition on scroll
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#141414] text-white font-sans overflow-x-hidden selection:bg-red-600 selection:text-white">
+    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden font-sans selection:bg-red-600 selection:text-white">
       
-      {/* --- 1. ADVANCED NAVBAR --- */}
-      <nav className={`fixed top-0 w-full z-50 flex justify-between items-center px-4 py-4 transition-all duration-500 ${isScrolled ? 'bg-black/90 backdrop-blur-md shadow-lg' : 'bg-gradient-to-b from-black/80 to-transparent'}`}>
-        <div className="flex items-center gap-3 cursor-pointer">
-          <motion.div 
-            initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.5 }}
-            className="w-8 h-8 bg-red-600 rounded flex items-center justify-center shadow-[0_0_20px_rgba(220,38,38,0.6)]"
-          >
-            <span className="text-white font-black text-lg">N</span>
-          </motion.div>
-          <span className="text-xl font-bold text-red-600 tracking-wide hidden sm:block">NetVlyx</span>
+      {/* --- Navbar --- */}
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 px-4 md:px-12 py-4 flex items-center justify-between ${
+          scrolled ? 'bg-[#0a0a0a]/95 backdrop-blur-md shadow-lg' : 'bg-gradient-to-b from-black/80 to-transparent'
+        }`}>
+        <div className="flex items-center gap-8">
+          <Link href="/" className="text-red-600 text-3xl font-bold tracking-tighter hover:scale-105 transition-transform">
+            NetVlyx
+          </Link>
+          <div className="hidden md:flex gap-6 text-sm text-gray-300 font-medium">
+            {['Home', 'TV Shows', 'Movies', 'New & Popular', 'My List'].map((item) => (
+              <Link key={item} href="#" className="hover:text-white transition-colors">{item}</Link>
+            ))}
+          </div>
         </div>
 
-        <div className="flex gap-4">
-          <button className="hover:text-gray-300 transition transform hover:scale-110">
-             <Search size={22} className="text-white" />
-          </button>
-          <button className="hover:text-gray-300 transition transform hover:scale-110">
-             <Bell size={22} className="text-white" />
-          </button>
-          <button className="hover:text-gray-300 transition transform hover:scale-110">
-             <Menu size={22} className="text-white" />
-          </button>
+        <div className="flex items-center gap-6 text-gray-200">
+          <Search className="w-6 h-6 cursor-pointer hover:text-white transition-colors" />
+          <Bell className="w-6 h-6 cursor-pointer hover:text-white transition-colors" />
+          <div className="w-8 h-8 rounded bg-red-600 cursor-pointer overflow-hidden border border-white/20">
+             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
+          </div>
+          <Menu className="md:hidden w-6 h-6 cursor-pointer" />
         </div>
       </nav>
 
-      {/* --- 2. CINEMATIC VIDEO HERO SECTION --- */}
-      <header className="relative w-full h-[90vh] overflow-hidden">
-        
-        {/* Background Video */}
-        <div className="absolute inset-0 z-0">
+      {/* --- Hero Section --- */}
+      <header className="relative w-full h-[85vh] md:h-[95vh] overflow-hidden group">
+        <div className="absolute inset-0 w-full h-full pointer-events-none">
+            {/* Background Video */}
             <video 
-              className="w-full h-full object-cover scale-125 md:scale-100 opacity-60"
-              autoPlay 
-              loop 
-              muted={isMuted} 
-              playsInline
-              poster={HERO_MOVIE.poster}
+                poster="https://image.tmdb.org/t/p/original/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg"
+                autoPlay muted loop 
+                className="w-full h-full object-cover opacity-60 scale-105 group-hover:scale-100 transition-transform duration-[2s]"
             >
-              <source src={HERO_MOVIE.videoUrl} type="video/mp4" />
+                <source src={HERO_MOVIE.videoUrl} type="video/mp4" />
             </video>
-            
-            {/* Professional Gradients */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#141414]" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
+            {/* Cinematic Gradient Overlays */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/90 via-[#0a0a0a]/30 to-transparent" />
         </div>
 
-        {/* Hero Content with Animation */}
-        <motion.div 
-          initial={{ opacity: 0, y: 50 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="absolute bottom-[20%] left-4 md:left-12 max-w-xl space-y-5 z-10"
-        >
-          {/* Logo / Title */}
-          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter drop-shadow-2xl">
-            {HERO_MOVIE.title.toUpperCase()}
-          </h1>
-
-          <div className="flex items-center gap-3 text-sm font-semibold text-green-400">
-            <span>98% Match</span>
-            <span className="text-gray-300">2024</span>
-            <span className="border border-gray-500 px-1 text-gray-300 text-xs rounded">U/A 13+</span>
-          </div>
-
-          <p className="text-gray-200 text-sm md:text-lg line-clamp-3 text-shadow-md">
-            {HERO_MOVIE.desc}
-          </p>
-
-          <div className="flex gap-4 pt-2">
-            {/* HERO LINK: Points to dynamic ID */}
-            <Link href={`/movie/${HERO_MOVIE.id}`}>
-                <button className="bg-white text-black px-6 md:px-8 py-2 md:py-3 rounded hover:bg-opacity-80 transition font-bold flex items-center gap-2 text-lg">
+        <div className="absolute bottom-0 left-0 w-full p-6 md:p-12 md:pb-24 flex flex-col justify-end h-full z-10 max-w-2xl">
+          <motion.h1 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-5xl md:text-7xl font-black mb-4 tracking-tight drop-shadow-2xl"
+          >
+            {HERO_MOVIE.title}
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-lg text-gray-200 mb-8 line-clamp-3 drop-shadow-md font-medium"
+          >
+            {HERO_MOVIE.description}
+          </motion.p>
+          
+          <div className="flex gap-4">
+            <Link href={`/movie/${LATEST_RELEASES[0].id}`}>
+                <button className="flex items-center gap-2 bg-white text-black px-8 py-3 rounded-[4px] font-bold hover:bg-white/90 transition text-lg active:scale-95">
                 <Play fill="black" size={24} /> Play
                 </button>
             </Link>
-            <button className="bg-gray-500/40 backdrop-blur-sm text-white px-6 md:px-8 py-2 md:py-3 rounded hover:bg-gray-500/60 transition font-bold flex items-center gap-2 text-lg">
+            <button className="flex items-center gap-2 bg-gray-500/40 backdrop-blur-sm text-white px-8 py-3 rounded-[4px] font-bold hover:bg-gray-500/60 transition text-lg">
               <Info size={24} /> More Info
             </button>
-            {/* Mute/Unmute Toggle */}
-            <button onClick={() => setIsMuted(!isMuted)} className="p-3 border border-gray-400 rounded-full hover:bg-white/10 transition">
-               {isMuted ? <VolumeX size={20}/> : <Volume2 size={20}/>}
-            </button>
           </div>
-        </motion.div>
+        </div>
       </header>
 
-      {/* --- 3. SLIDERS WITH HOVER EFFECTS --- */}
-      <div className="relative z-20 -mt-24 space-y-10 pb-20 px-4 md:px-12">
+      {/* --- Sliders --- */}
+      <main className="relative z-20 -mt-12 md:-mt-32 space-y-12 pb-20 pl-4 md:pl-12 overflow-hidden">
         
-        {/* Latest Movies */}
-        <Section title="Latest Releases">
-          {LATEST_UPLOADS.map((movie, i) => (
-            // DYNAMIC LINK: /movie/fallout-series
-            <Link href={`/movie/${movie.id}`} key={i}>
+        {/* 1. Latest Releases */}
+        <section>
+          <h2 className="text-xl md:text-2xl font-semibold mb-4 text-white/90">Latest Releases</h2>
+          <div className="flex gap-4 overflow-x-scroll no-scrollbar pb-8 pr-8 scroll-smooth">
+            {LATEST_RELEASES.map((movie) => (
+              <Link key={movie.id} href={`/movie/${movie.id}`} className="flex-none group relative">
                 <motion.div 
-                whileHover={{ scale: 1.05, zIndex: 10 }}
-                className="min-w-[140px] md:min-w-[220px] bg-[#1f1f1f] rounded-md overflow-hidden cursor-pointer relative group shadow-lg"
+                    whileHover={{ scale: 1.05, zIndex: 10 }}
+                    className="w-[160px] md:w-[220px] aspect-[2/3] rounded-md overflow-hidden bg-zinc-800 cursor-pointer shadow-lg transition-shadow"
                 >
-                <img src={movie.img} alt={movie.name} className="w-full h-[200px] md:h-[120px] object-cover" />
-                
-                {/* Hover Info (Desktop mainly) */}
-                <div className="p-3">
-                    <h3 className="text-sm font-bold text-gray-200 group-hover:text-white">{movie.name}</h3>
-                    <div className="flex justify-between items-center mt-2 text-[10px] text-gray-400">
-                        <span className="text-green-400">New</span>
-                        <div className="flex gap-2">
-                        <div className="border border-gray-600 rounded-full p-1"><Play size={8} fill="white"/></div>
-                        </div>
+                  <img src={movie.image} alt={movie.title} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center flex-col p-2 text-center">
+                    <p className="font-bold text-sm">{movie.title}</p>
+                    <p className="text-green-400 text-xs font-semibold mt-1">{movie.match}</p>
+                    <div className="mt-2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition">
+                        <Play fill="black" size={16} className="text-black ml-1" />
                     </div>
+                  </div>
+                </motion.div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* 2. Top 10 Movies (Custom SVG Number Overlay) */}
+        <section>
+          <h2 className="text-xl md:text-2xl font-semibold mb-4 text-white/90">Top 10 Movies in India Today</h2>
+          <div className="flex gap-0 overflow-x-scroll no-scrollbar pb-8 pr-8 items-center">
+            {TOP_10.map((movie, index) => (
+              <Link key={movie.id} href={`/movie/${movie.id}`} className="flex-none group relative flex items-center mr-6">
+                
+                {/* SVG Number */}
+                <div className="h-[160px] md:h-[220px] w-[90px] flex items-end justify-end -mr-6 z-0 pointer-events-none">
+                   <svg viewBox="0 0 100 150" className="h-full w-full overflow-visible">
+                        <text x="50%" y="150" fontSize="160" fontWeight="bold" stroke="#555" strokeWidth="4" fill="#000" style={{ fontFamily: 'Impact, sans-serif' }}>
+                            {index + 1}
+                        </text>
+                   </svg>
                 </div>
-                </motion.div>
-            </Link>
-          ))}
-        </Section>
 
-        {/* Top 10 (Big Numbers) */}
-        <Section title="Top 10 Movies in India">
-          {POPULAR_IND.map((movie, index) => (
-            // DYNAMIC LINK: /movie/pushpa-2
-            <Link href={`/movie/${movie.id}`} key={index}>
-                <motion.div whileHover={{ scale: 1.1 }} className="relative min-w-[160px] md:min-w-[200px] flex items-end h-[180px] cursor-pointer">
-                <span className="absolute -left-6 bottom-0 text-[100px] font-black leading-none text-[#141414] drop-shadow-lg" style={{ WebkitTextStroke: "4px #555" }}>
-                    {index + 1}
-                </span>
-                <img src={movie.img} alt={movie.name} className="relative z-10 w-[120px] h-[160px] object-cover rounded-md ml-6 shadow-black/80 shadow-xl" />
+                {/* Movie Card */}
+                <motion.div 
+                    whileHover={{ scale: 1.05, zIndex: 10 }}
+                    className="w-[130px] md:w-[150px] aspect-[2/3] rounded-md overflow-hidden bg-zinc-800 cursor-pointer shadow-lg z-10"
+                >
+                  <img src={movie.image} alt={movie.title} className="w-full h-full object-cover" />
                 </motion.div>
-            </Link>
-          ))}
-        </Section>
-
-      </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
-
-// --- REUSABLE SECTION COMPONENT ---
-function Section({ title, children }: { title: string, children: React.ReactNode }) {
-  return (
-    <div>
-      <h2 className="text-xl md:text-2xl font-bold mb-4 text-white hover:text-red-500 transition cursor-pointer inline-flex items-center gap-2">
-        {title} <span className="text-sm text-cyan-500 opacity-0 hover:opacity-100 transition">Explore &gt;</span>
-      </h2>
-      <div className="flex overflow-x-auto gap-4 pb-8 scrollbar-hide items-center">
-        {children}
-      </div>
-    </div>
-  );
-        }
