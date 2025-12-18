@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-// FIX: Maine yahan 'Bell' add kar diya hai
+import Link from "next/link"; // Navigation ke liye Link import kiya
 import { Play, Info, Search, MessageCircle, Menu, Volume2, VolumeX, Bell } from "lucide-react"; 
 import { motion } from "framer-motion";
 
@@ -57,7 +57,6 @@ export default function Home() {
         </div>
 
         <div className="flex gap-4">
-          {/* Icons fixed */}
           <button className="hover:text-gray-300 transition transform hover:scale-110">
              <Search size={22} className="text-white" />
           </button>
@@ -114,9 +113,11 @@ export default function Home() {
           </p>
 
           <div className="flex gap-4 pt-2">
-            <button className="bg-white text-black px-6 md:px-8 py-2 md:py-3 rounded hover:bg-opacity-80 transition font-bold flex items-center gap-2 text-lg">
-              <Play fill="black" size={24} /> Play
-            </button>
+            <Link href="/movie">
+                <button className="bg-white text-black px-6 md:px-8 py-2 md:py-3 rounded hover:bg-opacity-80 transition font-bold flex items-center gap-2 text-lg">
+                <Play fill="black" size={24} /> Play
+                </button>
+            </Link>
             <button className="bg-gray-500/40 backdrop-blur-sm text-white px-6 md:px-8 py-2 md:py-3 rounded hover:bg-gray-500/60 transition font-bold flex items-center gap-2 text-lg">
               <Info size={24} /> More Info
             </button>
@@ -134,36 +135,41 @@ export default function Home() {
         {/* Latest Movies */}
         <Section title="Latest Releases">
           {LATEST_UPLOADS.map((movie, i) => (
-            <motion.div 
-              key={i} 
-              whileHover={{ scale: 1.05, zIndex: 10 }}
-              className="min-w-[140px] md:min-w-[220px] bg-[#1f1f1f] rounded-md overflow-hidden cursor-pointer relative group shadow-lg"
-            >
-              <img src={movie.img} alt={movie.name} className="w-full h-[200px] md:h-[120px] object-cover" />
-              
-              {/* Hover Info (Desktop mainly) */}
-              <div className="p-3">
-                 <h3 className="text-sm font-bold text-gray-200 group-hover:text-white">{movie.name}</h3>
-                 <div className="flex justify-between items-center mt-2 text-[10px] text-gray-400">
-                    <span className="text-green-400">New</span>
-                    <div className="flex gap-2">
-                      <div className="border border-gray-600 rounded-full p-1"><Play size={8} fill="white"/></div>
+            // Link added here
+            <Link href="/movie" key={i}>
+                <motion.div 
+                whileHover={{ scale: 1.05, zIndex: 10 }}
+                className="min-w-[140px] md:min-w-[220px] bg-[#1f1f1f] rounded-md overflow-hidden cursor-pointer relative group shadow-lg"
+                >
+                <img src={movie.img} alt={movie.name} className="w-full h-[200px] md:h-[120px] object-cover" />
+                
+                {/* Hover Info (Desktop mainly) */}
+                <div className="p-3">
+                    <h3 className="text-sm font-bold text-gray-200 group-hover:text-white">{movie.name}</h3>
+                    <div className="flex justify-between items-center mt-2 text-[10px] text-gray-400">
+                        <span className="text-green-400">New</span>
+                        <div className="flex gap-2">
+                        <div className="border border-gray-600 rounded-full p-1"><Play size={8} fill="white"/></div>
+                        </div>
                     </div>
-                 </div>
-              </div>
-            </motion.div>
+                </div>
+                </motion.div>
+            </Link>
           ))}
         </Section>
 
         {/* Top 10 (Big Numbers) */}
         <Section title="Top 10 Movies in India">
           {POPULAR_IND.map((movie, index) => (
-            <motion.div key={index} whileHover={{ scale: 1.1 }} className="relative min-w-[160px] md:min-w-[200px] flex items-end h-[180px] cursor-pointer">
-              <span className="absolute -left-6 bottom-0 text-[100px] font-black leading-none text-[#141414] drop-shadow-lg" style={{ WebkitTextStroke: "4px #555" }}>
-                {index + 1}
-              </span>
-              <img src={movie.img} alt={movie.name} className="relative z-10 w-[120px] h-[160px] object-cover rounded-md ml-6 shadow-black/80 shadow-xl" />
-            </motion.div>
+            // Link added here
+            <Link href="/movie" key={index}>
+                <motion.div whileHover={{ scale: 1.1 }} className="relative min-w-[160px] md:min-w-[200px] flex items-end h-[180px] cursor-pointer">
+                <span className="absolute -left-6 bottom-0 text-[100px] font-black leading-none text-[#141414] drop-shadow-lg" style={{ WebkitTextStroke: "4px #555" }}>
+                    {index + 1}
+                </span>
+                <img src={movie.img} alt={movie.name} className="relative z-10 w-[120px] h-[160px] object-cover rounded-md ml-6 shadow-black/80 shadow-xl" />
+                </motion.div>
+            </Link>
           ))}
         </Section>
 
@@ -184,4 +190,4 @@ function Section({ title, children }: { title: string, children: React.ReactNode
       </div>
     </div>
   );
-                                                                                                                         }
+}
